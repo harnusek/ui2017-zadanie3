@@ -1,0 +1,5 @@
+#Selection types: 1=lalal, 2=tralala
+selectionMetod= 7
+populationSize= 1
+maxGenerations = 1
+mutationPercentage = 5
