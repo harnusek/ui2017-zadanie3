@@ -24,7 +24,7 @@ public class Evolution {
 		
 		Garden solution = findSolution();
 		
-		printMap();
+		//printMap();
 		//output();
 	}
 	/**

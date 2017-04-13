@@ -5,6 +5,8 @@ import java.util.Random;
 public class Position {
 
 	public int x, y;
+	public static final int UP = 0, DOWN = 1, RIGHT = 2, LEFT = 3;
+	public int direction;
 
 	/**
 	 * Vytvori novy gen
@@ -33,18 +35,22 @@ public class Position {
 		if(g < first) {
 			x = g;
 			y = 0;
+			direction = DOWN;
 		}
 		else if(g < second) {
 			x = Evolution.width-1;
 			y = (1+g-first);
+			direction = LEFT;
 		}
 		else if(g < third) {
 			x = (g-second);
 			y = Evolution.height-1;
+			direction = UP;
 		}
 		else if(g < fourth) {
 			x = 0;
 			y = (1+g-third);
+			direction = RIGHT;
 		}
 	}
 	/**
