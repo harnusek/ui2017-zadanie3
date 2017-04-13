@@ -8,10 +8,9 @@ public class Garden {
 
 	private Position entryGenes[];
 	private static final int SAND = 0, STONE = -1;
-	private static final boolean RIGHT = false, LEFT = true;
 	private boolean decisionGenes[];
-	int x,y,direction;
-	
+	int x,y,direction,decisionNumber;
+	boolean isStuck;
 	int fitnessValue;
 	private int map[][];
 	
@@ -50,7 +49,9 @@ public class Garden {
 	private int getDecisionsCnt() {
 		return Evolution.stones[0].length;
 	}
-		
+	/**
+	 * Ohodnoti jedinca	
+	 */
 	public void fitness() {
 		//skopirovanie mapy
 		map = new int[Evolution.map.length][];
@@ -61,7 +62,7 @@ public class Garden {
 		int line=0;
 		//vyber genov vstupu
 		for(int i=0; i<getEntriesCnt(); i++) {
-			travel(entryGenes[0], ++line);
+			travel(entryGenes[i], ++line);
 		}
 		printMap();
 	}
@@ -73,7 +74,7 @@ public class Garden {
 		y = position.y;
 		direction = position.direction;
 		
-		x=1;y=9;direction=Position.UP;
+		//x=1;y=9;direction=Position.UP;
 		//ak moze vstupit
 		if(map[x][y]==SAND) {
 			map[x][y]=mark;
@@ -127,24 +128,55 @@ public class Garden {
 	 * Zmenenie smeru pohybu
 	 */
 	private boolean changeDirection() {
-		System.out.println(x+"_"+y);
-		
-		switch(direction) {
-			case Position.UP: 
-	
-				break;
-			case Position.DOWN:	
-	
-				break;
-			case Position.RIGHT:
-	
-				break;	
-			case Position.LEFT:
-	
-				break;
+				
+		if(direction==Position.UP || direction==Position.DOWN) {	//vertical
+			if(x>0 && x<Evolution.width-1 && map[x+1][y]==SAND && map[x-1][y]==SAND) {			//moze ist oboma smermi
+				if(getDecision()) direction = Position.RIGHT;
+				else direction = Position.LEFT;
+				return true;
+			}
+			else if(x<Evolution.width-1 && map[x+1][y]==SAND) {							//vpravo
+				direction = Position.RIGHT;	
+				return true;
+			}
+			else if(x>0 && map[x-1][y]==SAND) {							//vlavo
+				direction = Position.LEFT;	
+				return true;
+			}
+			else {
+				isStuck = true;
+				return false;										//zasekol sa
+			}
+		}
+		else if(y>0 && y<Evolution.width-1 && direction==Position.RIGHT || direction==Position.LEFT) {	//horizontal
+			if(map[x][y+1]==SAND && map[x][y-1]==SAND) {			//moze ist oboma smermi
+				if(getDecision()) direction = Position.UP;
+				else direction = Position.DOWN;
+				return true;
+			}
+			else if(y<Evolution.width-1 && map[x][y+1]==SAND) {							//hore
+				direction = Position.UP;	
+				return true;
+			}
+			else if(y>0 && map[x][y-1]==SAND) {							//dole
+				direction = Position.LEFT;	
+				return true;
+			}
+			else {
+				isStuck = true;
+				return false;										//zasekol sa
+			}
 		}
 		
 		return false;
+	}
+	/**
+	 * Vrati rozhodnutie zabocenia z genu
+	 */
+	private boolean getDecision() {
+		boolean decision = decisionGenes[decisionNumber];
+		decisionNumber = (decisionNumber+1)%getDecisionsCnt();
+		return decision;
 	}
 	/**
 	 * Vypise mapu
@@ -152,7 +184,8 @@ public class Garden {
 	private void printMap() {
 		for(int i=0; i<Evolution.height; i++) {
 			for(int j=0; j<Evolution.width; j++) {
-				System.out.printf("%2d ",map[j][i]);
+				if(map[j][i]==-1)System.out.printf("   ");
+				else System.out.printf("%2d ",map[j][i]);
 			}
 			System.out.println();
 		}

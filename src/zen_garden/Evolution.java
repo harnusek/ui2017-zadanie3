@@ -72,7 +72,8 @@ public class Evolution {
 	private void printMap() {
 		for(int i=0; i<height; i++) {
 			for(int j=0; j<width; j++) {
-				System.out.printf("%2d ",map[j][i]);
+				if(map[j][i]==-1)System.out.printf(" K");
+				else System.out.printf("%2d ",map[j][i]);
 			}
 		System.out.println();
 		}
