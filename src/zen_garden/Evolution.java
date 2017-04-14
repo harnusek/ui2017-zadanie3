@@ -1,6 +1,9 @@
 package zen_garden;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
+
 
 /**
  * Evolucny algoritmus
@@ -32,28 +35,28 @@ public class Evolution {
 		
 		Garden solution = findSolution();
 		if(solution != null) solution.printMap();
-		else System.out.println("null");
+		else System.out.println("solution not found");
 	}
 	/**
 	 * Prebieha evolucne hladanie riesenia
 	 */
 	private Garden findSolution() {
 		for(int g=0; g<maxGenerations; g++) {
+			//System.out.println("gen: "+g);
 			//ohodnotenie jedincov
 			int fitnessSum=0;
 			for(Garden garden : population) {	
 				fitnessSum+= garden.fitness();				
 				if(garden.isFinal()) return garden;
 			}
-			
 			//vytvorene novej populacie
 			runReproduction(fitnessSum);
-			
-			//mutacia
-			runMutation();
 		}
 		return null;
 	}
+	/**
+	 * Vytvorenie novej populacie
+	 */
 	private void runReproduction(int fitnessSum) {
 		Garden newPopulation[] = new Garden[populationSize];
 		for(int i=0; i<populationSize; i++) {
@@ -64,14 +67,40 @@ public class Evolution {
 				newPopulation[i] = recombination(proportionalSelect(fitnessSum),proportionalSelect(fitnessSum));
 			}
 		}
-		
+		population = newPopulation;
 	}
 	/**
-	 * Vrati skrizeneho potomka
+	 * Vrati skrizeneho a zmutovaneho potomka
 	 */
-	private Garden recombination(Garden tournamentSelect, Garden tournamentSelect2) {
-		tournamentSelect.printMap();
-		return null;
+	private Garden recombination(Garden male, Garden female) {
+		Garden newGarden = new Garden();
+		int index, count= newGarden.getEntriesCnt();
+        ArrayList<Integer> r = new ArrayList<Integer>();
+        
+        for (int i=0; i<count; i++) r.add(new Integer(i));
+        Collections.shuffle(r);		
+		for(int i=0; i<count/2; i++) {
+			index = r.get(i);
+			newGarden.entryGenes[index] = male.getCopyEntryGene(index);
+		}
+		for(int i=count/2; i<newGarden.getEntriesCnt(); i++) {
+			index = r.get(i);
+			newGarden.entryGenes[index] = female.getCopyEntryGene(index);
+		}
+		r = new ArrayList<Integer>();
+		count = newGarden.getDecisionsCnt();
+        for (int i=0; i<count; i++) r.add(new Integer(i));
+        Collections.shuffle(r);
+		for(int i=0; i<count/2; i++) {
+			index = r.get(i);
+			newGarden.decisionGenes[index] = male.decisionGenes[index];
+		}
+		for(int i=count/2; i<newGarden.getDecisionsCnt(); i++) {
+			index = r.get(i);
+			newGarden.decisionGenes[index] = female.decisionGenes[index];
+		}
+		newGarden.mutation();
+		return newGarden;
 	}
 	/**
 	 * Selekcia - vyber nahodne 2 jedincov z populacie a vrat lepsieho z nich
@@ -80,7 +109,6 @@ public class Evolution {
 		Random r = new Random();
 		int indexG1= r.nextInt(populationSize);
 		int indexG2= r.nextInt(populationSize);
-		//System.out.println(population[indexG1].fitnessValue + " " + population[indexG2].fitnessValue);
 		if(population[indexG1].fitnessValue > population[indexG2].fitnessValue) {
 			return population[indexG1];
 		}
@@ -89,8 +117,8 @@ public class Evolution {
 		}
 	}
 	/**
-	 * selekcia
-	 */
+	 * Selekcia - pravdepodobnost vyberu jedinca sa urci ako podiel jeho sily voci celkovej sile populacie
+	 */ 
 	private Garden proportionalSelect(int fitnessSum) {
 		Random r = new Random();
 		int exceedance = r.nextInt(fitnessSum);
@@ -104,12 +132,6 @@ public class Evolution {
         }
 		return population[0];
 	}
-	/**
-	 * Mutacia genov
-	 */
-	private void runMutation() {	
-	}
-
 	/**
 	 * Vypise mapu
 	 */

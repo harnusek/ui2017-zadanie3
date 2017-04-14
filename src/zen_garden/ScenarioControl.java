@@ -35,21 +35,6 @@ public class ScenarioControl {
 		Evolution.mutationPercentage = Integer.parseInt(config.getProperty("mutationPercentage"));
 	}
 	/**
-	 * Pravdepodobnostna  f
-	 */
-	private void probability() {
-		int sum=0, count=100000;
-		int p=10;
-		Random r=new Random();
-		
-		for(int i=0; i<count; i++) {
-			int rand = r.nextInt(10);
-			if(p>rand) sum++;
-		}
-		System.out.println(sum);
-		
-	}
-	/**
 	 * Nacita jeden scenar zo suboru
 	 */
 	private void readScenario() throws IOException {

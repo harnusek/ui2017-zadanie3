@@ -6,10 +6,10 @@ import java.util.stream.IntStream;
 
 public class Garden {
 
-	private Position entryGenes[];
+	public Position entryGenes[];
 	private static final int SAND = 0, STONE = -1;
-	private boolean decisionGenes[];
-	private int x,y,direction,decisionNumber;
+	public boolean decisionGenes[];
+	private int x,y,direction,decisionNumber,mark;
 	private boolean isStuck;
 	public int fitnessValue;
 	private int map[][];
@@ -28,25 +28,22 @@ public class Garden {
 		for(int i=0; i<getEntriesCnt(); i++) {
 			entryGenes[i] = new Position();
 			entryGenes[i].randomisation();
-														//entryGenes[i].printInfo();
 		}	
 		Random r = new Random();
 		for(int i=0; i<getDecisionsCnt(); i++) {
 			decisionGenes[i] = r.nextBoolean();
-														//System.out.println(decisionGenes[i]);
 		}
-														//System.out.println();
 	}
 	/**
 	 * Vrati pocet genov vstupu, (polovica obvodu)
 	 */
-	private int getEntriesCnt() {
+	public int getEntriesCnt() {
 		return Evolution.height + Evolution.width;
 	}
 	/**
 	 * Vrati pocet genov rozhodnuti, (pocet kamenov)
 	 */
-	private int getDecisionsCnt() {
+	public int getDecisionsCnt() {
 		return Evolution.stones[0].length;
 	}
 	/**
@@ -60,11 +57,12 @@ public class Garden {
 			map[i] = Evolution.map[i].clone();
 		}
 		//znacka na mape
-		int mark=0;
+		mark=1;
 		//vyber genov vstupu
 		for(int i=0; i<getEntriesCnt(); i++) {
-			travel(entryGenes[i], ++mark);
+			travel(entryGenes[i]);
 		}
+		//this.printMap();
 		return fitnessValue;
 	}
 	/**
@@ -81,7 +79,7 @@ public class Garden {
 	/**
 	 * Prejde hrablami raz cez zahradu
 	 */
-	private void travel(Position position, int mark) {
+	private void travel(Position position) {
 		x = position.x;
 		y = position.y;
 		direction = position.direction;
@@ -97,22 +95,22 @@ public class Garden {
 		while(insideGarden) {
 			switch(direction) {
 				case Position.UP: 
-					if(!jump(x,y-1,mark)) {
+					if(!jump(x,y-1)) {
 						insideGarden = false;
 					}
 					break;
 				case Position.DOWN:	
-					if(!jump(x,y+1,mark)) {
+					if(!jump(x,y+1)) {
 						insideGarden = false;
 					}
 					break;
 				case Position.RIGHT:
-					if(!jump(x+1,y,mark)) {
+					if(!jump(x+1,y)) {
 						insideGarden = false;
 					}
 					break;	
 				case Position.LEFT:
-					if(!jump(x-1,y,mark)) {
+					if(!jump(x-1,y)) {
 						insideGarden = false;
 					}
 					break;
@@ -122,7 +120,7 @@ public class Garden {
 	/**
 	 * Otestuje platnost policka, posunie sa, zmeni smer alebo skonci 
 	 */
-	private boolean jump(int nextX, int nextY, int mark) {
+	private boolean jump(int nextX, int nextY) {
 		if(nextX>=0 && nextX<Evolution.width && nextY>=0 && nextY<Evolution.height){
 			if(map[nextX][nextY]==SAND) {
 				map[nextX][nextY] = mark;
@@ -133,6 +131,7 @@ public class Garden {
 			}
 			else return changeDirection();
 		}
+		mark++;
 		return false;//koniec ciary
 	}
 	/**
@@ -212,6 +211,29 @@ public class Garden {
 			}
 			System.out.println();
 		}
-		System.out.println(fitnessValue);
+		System.out.println("-"+fitnessValue+"-\n");
 	}
+	/**
+	 * Vrati duplikovany gen
+	 */
+	public Position getCopyEntryGene(int i) {
+		Position copy = new Position();	
+		copy.x = entryGenes[i].x;
+		copy.y = entryGenes[i].y;
+		copy.direction = entryGenes[i].direction;
+		return copy;
+	}
+	/**
+	 * Zmutuje jedinca
+	 */
+	public void mutation() {
+		Random r = new Random();
+		for(int i=0; i<getEntriesCnt(); i++) {
+			if(Evolution.mutationPercentage>r.nextInt(100)) {
+				entryGenes[i].randomisation();
+			}
+		}	
+	}
+	
 }
+

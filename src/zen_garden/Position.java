@@ -46,4 +46,5 @@ public class Position {
 	public void printInfo() {
 		System.out.printf("[%2d, %2d]\n",x,y);
 	}
+
 }
