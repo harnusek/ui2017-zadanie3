@@ -28,14 +28,14 @@ public class Garden {
 		for(int i=0; i<getEntriesCnt(); i++) {
 			entryGenes[i] = new Position();
 			entryGenes[i].randomisation();
-														entryGenes[i].printInfo();
+														//entryGenes[i].printInfo();
 		}	
 		Random r = new Random();
 		for(int i=0; i<getDecisionsCnt(); i++) {
 			decisionGenes[i] = r.nextBoolean();
-														System.out.println(decisionGenes[i]);
+														//System.out.println(decisionGenes[i]);
 		}
-														System.out.println();
+														//System.out.println();
 	}
 	/**
 	 * Vrati pocet genov vstupu, (polovica obvodu)
@@ -65,6 +65,7 @@ public class Garden {
 			travel(entryGenes[i], ++mark);
 		}
 		printMap();
+		System.out.println(fitnessValue);
 	}
 	/**
 	 * Prejde hrablami raz cez zahradu
@@ -78,6 +79,7 @@ public class Garden {
 		//ak moze vstupit
 		if(map[x][y]==SAND) {
 			map[x][y]=mark;
+			++fitnessValue;
 		} else return;
 
 		boolean insideGarden=true;	
@@ -119,7 +121,7 @@ public class Garden {
 				this.y=nextY;
 				return true;
 			}
-			else return false;//changeDirection();
+			else return changeDirection();
 		}
 		return false;//koniec
 	}
@@ -127,45 +129,54 @@ public class Garden {
 	 * Zmenenie smeru pohybu
 	 */
 	private boolean changeDirection() {
-				
-		if(direction==Position.UP || direction==Position.DOWN) {						//vertical
-			if(x>0 && map[x-1][y]==SAND && x<Evolution.width-1 && map[x+1][y]==SAND) {			//moze ist oboma smermi
+		boolean wantHorisontal = (direction==Position.UP || direction==Position.DOWN);
+		boolean wantVertical = (direction==Position.RIGHT || direction==Position.LEFT);
+		
+		if(wantHorisontal) {	
+			boolean canRight = (x<Evolution.width-1 && map[x+1][y]==SAND) || (x==Evolution.width-1);	
+			boolean canLeft = ((x>0 && map[x-1][y]==SAND) || (x==0));				
+			
+			if(canRight && canLeft) {			
 				if(getDecision()) direction = Position.RIGHT;
 				else direction = Position.LEFT;
 				return true;
 			}
-			else if(x<Evolution.width-1 && map[x+1][y]==SAND) {							//vpravo
+			else if(canRight) {							
 				direction = Position.RIGHT;	
 				return true;
 			}
-			else if(x>0 && map[x-1][y]==SAND) {							//vlavo
+			else if(canLeft) {						
 				direction = Position.LEFT;	
 				return true;
 			}
 			else {
 				isStuck = true;
-				return false;										//zasekol sa
+				return false;										
 			}
 		}
-		else if(direction==Position.RIGHT || direction==Position.LEFT) {						//vertical
-			if(y>0 && map[x][y-1]==SAND && y<Evolution.height-1 && map[x][y+1]==SAND) {			//moze ist oboma smermi
-				if(getDecision()) direction = Position.UP;
-				else direction = Position.DOWN;
+		else if(wantVertical) {		
+			boolean canDown = (y<Evolution.height-1 && map[x][y+1]==SAND) || (y==Evolution.height-1);	
+			boolean canUp = ((y>0 && map[x][y-1]==SAND) || (y==0));	
+			
+			if(canDown && canUp) {			
+				if(getDecision()) direction = Position.DOWN;
+				else direction = Position.UP;
 				return true;
 			}
-			else if(y<Evolution.width-1 && map[x][y+1]==SAND) {							//hore
+			else if(canDown) {							
+				direction = Position.DOWN;	
+				return true;
+			}
+			else if(canUp) {						
 				direction = Position.UP;	
 				return true;
 			}
-			else if(y>0 && map[x][y-1]==SAND) {							//dole
-				direction = Position.LEFT;	
-				return true;
-			}
 			else {
 				isStuck = true;
-				return false;										//zasekol sa
+				return false;										
 			}
 		}
+
 		
 		return false;
 	}
@@ -173,6 +184,9 @@ public class Garden {
 	 * Vrati rozhodnutie zabocenia z genu
 	 */
 	private boolean getDecision() {
+		if(decisionNumber==0) {
+			return new Random().nextBoolean();
+		}
 		boolean decision = decisionGenes[decisionNumber];
 		decisionNumber = (decisionNumber+1)%getDecisionsCnt();
 		return decision;
