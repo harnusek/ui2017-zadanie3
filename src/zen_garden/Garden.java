@@ -59,10 +59,10 @@ public class Garden {
 			map[i] = Evolution.map[i].clone();
 		}
 		
-		int line=0;
+		int mark=0;//znacka na mape
 		//vyber genov vstupu
 		for(int i=0; i<getEntriesCnt(); i++) {
-			travel(entryGenes[i], ++line);
+			travel(entryGenes[i], ++mark);
 		}
 		printMap();
 	}
@@ -79,7 +79,6 @@ public class Garden {
 		if(map[x][y]==SAND) {
 			map[x][y]=mark;
 		} else return;
-		
 
 		boolean insideGarden=true;	
 		//hrabanie
@@ -96,12 +95,12 @@ public class Garden {
 					}
 					break;
 				case Position.RIGHT:
-					if(!jump(x-1,y,mark)) {
+					if(!jump(x+1,y,mark)) {
 						insideGarden = false;
 					}
 					break;	
 				case Position.LEFT:
-					if(!jump(x+1,y,mark)) {
+					if(!jump(x-1,y,mark)) {
 						insideGarden = false;
 					}
 					break;
@@ -120,17 +119,17 @@ public class Garden {
 				this.y=nextY;
 				return true;
 			}
-			else return changeDirection();
+			else return false;//changeDirection();
 		}
-		return false;
+		return false;//koniec
 	}
 	/**
 	 * Zmenenie smeru pohybu
 	 */
 	private boolean changeDirection() {
 				
-		if(direction==Position.UP || direction==Position.DOWN) {	//vertical
-			if(x>0 && x<Evolution.width-1 && map[x+1][y]==SAND && map[x-1][y]==SAND) {			//moze ist oboma smermi
+		if(direction==Position.UP || direction==Position.DOWN) {						//vertical
+			if(x>0 && map[x-1][y]==SAND && x<Evolution.width-1 && map[x+1][y]==SAND) {			//moze ist oboma smermi
 				if(getDecision()) direction = Position.RIGHT;
 				else direction = Position.LEFT;
 				return true;
@@ -148,8 +147,8 @@ public class Garden {
 				return false;										//zasekol sa
 			}
 		}
-		else if(y>0 && y<Evolution.width-1 && direction==Position.RIGHT || direction==Position.LEFT) {	//horizontal
-			if(map[x][y+1]==SAND && map[x][y-1]==SAND) {			//moze ist oboma smermi
+		else if(direction==Position.RIGHT || direction==Position.LEFT) {						//vertical
+			if(y>0 && map[x][y-1]==SAND && y<Evolution.height-1 && map[x][y+1]==SAND) {			//moze ist oboma smermi
 				if(getDecision()) direction = Position.UP;
 				else direction = Position.DOWN;
 				return true;
@@ -184,7 +183,7 @@ public class Garden {
 	private void printMap() {
 		for(int i=0; i<Evolution.height; i++) {
 			for(int j=0; j<Evolution.width; j++) {
-				if(map[j][i]==-1)System.out.printf("   ");
+				if(map[j][i]==STONE)System.out.printf("   ");
 				else System.out.printf("%2d ",map[j][i]);
 			}
 			System.out.println();
