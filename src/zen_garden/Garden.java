@@ -11,7 +11,7 @@ public class Garden {
 	private boolean decisionGenes[];
 	private int x,y,direction,decisionNumber;
 	private boolean isStuck;
-	private int fitnessValue;
+	public int fitnessValue;
 	private int map[][];
 	
 	/**
@@ -51,19 +51,21 @@ public class Garden {
 	}
 	/**
 	 * Ohodnoti jedinca	
+	 * @return 
 	 */
-	public void fitness() {
+	public int fitness() {
 		//skopirovanie mapy
 		map = new int[Evolution.map.length][];
 		for(int i = 0; i < Evolution.map.length; i++) {
 			map[i] = Evolution.map[i].clone();
 		}
-		
-		int mark=0;//znacka na mape
+		//znacka na mape
+		int mark=0;
 		//vyber genov vstupu
 		for(int i=0; i<getEntriesCnt(); i++) {
 			travel(entryGenes[i], ++mark);
 		}
+		return fitnessValue;
 	}
 	/**
 	 * Znaci finalny stav

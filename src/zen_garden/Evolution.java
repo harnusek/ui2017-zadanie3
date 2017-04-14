@@ -1,4 +1,7 @@
 package zen_garden;
+
+import java.util.Random;
+
 /**
  * Evolucny algoritmus
  * @author Ondrej 
@@ -36,41 +39,84 @@ public class Evolution {
 	 */
 	private Garden findSolution() {
 		for(int g=0; g<maxGenerations; g++) {
+			//ohodnotenie jedincov
+			int fitnessSum=0;
 			for(Garden garden : population) {	
-				garden.fitness();				//ohodnotenie jedincov
+				fitnessSum+= garden.fitness();				
 				if(garden.isFinal()) return garden;
 			}
-		recombination();
-		mutation();
+			
+			//vytvorene novej populacie
+			runReproduction(fitnessSum);
+			
+			//mutacia
+			runMutation();
 		}
 		return null;
 	}
-
-	/**
-	 * 
-	 */
-	private void mutation() {
-		// TODO Auto-generated method stub
+	private void runReproduction(int fitnessSum) {
+		Garden newPopulation[] = new Garden[populationSize];
+		for(int i=0; i<populationSize; i++) {
+			if(selectionMetod == TOURNAMENT_SELECTION) {
+				newPopulation[i] = recombination(tournamentSelect(),tournamentSelect());
+			}
+			else if(selectionMetod == PROPORTIONAL_SELECTION) {
+				newPopulation[i] = recombination(proportionalSelect(fitnessSum),proportionalSelect(fitnessSum));
+			}
+		}
 		
 	}
 	/**
-	 * 
+	 * Vrati skrizeneho potomka
 	 */
-	private void recombination() {
-		if(selectionMetod == TOURNAMENT_SELECTION) {
-			
+	private Garden recombination(Garden tournamentSelect, Garden tournamentSelect2) {
+		tournamentSelect.printMap();
+		return null;
+	}
+	/**
+	 * Selekcia - vyber nahodne 2 jedincov z populacie a vrat lepsieho z nich
+	 */
+	private Garden tournamentSelect() {
+		Random r = new Random();
+		int indexG1= r.nextInt(populationSize);
+		int indexG2= r.nextInt(populationSize);
+		//System.out.println(population[indexG1].fitnessValue + " " + population[indexG2].fitnessValue);
+		if(population[indexG1].fitnessValue > population[indexG2].fitnessValue) {
+			return population[indexG1];
 		}
-		else if(selectionMetod == PROPORTIONAL_SELECTION) {
-			
+		else {
+			return population[indexG2];
 		}
 	}
+	/**
+	 * selekcia
+	 */
+	private Garden proportionalSelect(int fitnessSum) {
+		Random r = new Random();
+		int exceedance = r.nextInt(fitnessSum);
+		int cumulation=0;
+
+		for(int i=0;i<populationSize;i++){
+			cumulation+= population[i].fitnessValue;
+            if(cumulation > exceedance) {
+            	return population[i];
+            }
+        }
+		return population[0];
+	}
+	/**
+	 * Mutacia genov
+	 */
+	private void runMutation() {	
+	}
+
 	/**
 	 * Vypise mapu
 	 */
 	private void printMap() {
 		for(int i=0; i<height; i++) {
 			for(int j=0; j<width; j++) {
-				if(map[j][i]==-1)System.out.printf(" K");
+				if(map[j][i]==-1)System.out.printf("  ");
 				else System.out.printf("%2d ",map[j][i]);
 			}
 		System.out.println();

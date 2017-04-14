@@ -16,7 +16,7 @@ public class ScenarioControl {
 	 */
 	public ScenarioControl() throws IOException {
 		readConfig();
-		
+
 		while(input.hasNextInt()) {	//spustenie scenarov
 			readScenario();
 			new Evolution(width, height, stones);
