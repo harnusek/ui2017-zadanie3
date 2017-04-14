@@ -1,14 +1,19 @@
 package zen_garden;
-
+/**
+ * Evolucny algoritmus
+ * @author Ondrej 
+ */
 public class Evolution {
+	public static int TOURNAMENT_SELECTION=0, PROPORTIONAL_SELECTION=1;
 	public static int selectionMetod;
 	public static int populationSize;
 	public static int maxGenerations;
+	public static int mutationPercentage;
 	public static int width;
 	public static int height;
 	public static int[][] stones;
-	static int map[][];
-	Garden population[];
+	public static int map[][];
+	public Garden population[];
 	
 	/**
 	 * Evolucny algoritmus
@@ -23,28 +28,24 @@ public class Evolution {
 		generateFirstGeneration();//vytvori prvu generaciu nahodnych jedincov
 		
 		Garden solution = findSolution();
-		
-		//printMap();
-		//output();
+		if(solution != null) solution.printMap();
+		else System.out.println("null");
 	}
 	/**
-	 * 
+	 * Prebieha evolucne hladanie riesenia
 	 */
 	private Garden findSolution() {
-		for(int i=0; i<maxGenerations; i++) {
-			evaluation();
-			selection();
-			recombination();
-			mutation();
+		for(int g=0; g<maxGenerations; g++) {
+			for(Garden garden : population) {	
+				garden.fitness();				//ohodnotenie jedincov
+				if(garden.isFinal()) return garden;
+			}
+		recombination();
+		mutation();
 		}
 		return null;
 	}
-	private void evaluation() {
-		for(int i=0; i<populationSize; i++) {
-			population[i].fitness();
-		}
-		
-	}
+
 	/**
 	 * 
 	 */
@@ -56,15 +57,12 @@ public class Evolution {
 	 * 
 	 */
 	private void recombination() {
-		// TODO Auto-generated method stub
-		
-	}
-	/**
-	 * 
-	 */
-	private void selection() {
-		// TODO Auto-generated method stub
-		
+		if(selectionMetod == TOURNAMENT_SELECTION) {
+			
+		}
+		else if(selectionMetod == PROPORTIONAL_SELECTION) {
+			
+		}
 	}
 	/**
 	 * Vypise mapu
@@ -98,16 +96,4 @@ public class Evolution {
 			population[i].setRandom();
 		}
 	}
-	/**
-	 * Vystup
-	 */
-	private void output() {
-		System.out.println("dimensions: [" +width + ", " + height+ "]");
-		System.out.println("stones:");
-		for(int i=0; i<stones[0].length; i++) {
-			System.out.println("\t[" + stones[0][i] + ", " + stones[1][i] + "]");
-		}
-		System.out.println("--------------------------");
-	}
-	
 }

@@ -9,19 +9,6 @@ public class Position {
 	public int direction;
 
 	/**
-	 * Vytvori novy gen
-	 */
-	public Position(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-	/**
-	 * Explicitny konstruktor
-	 */
-	public Position() {
-		
-	}
-	/**
 	 * Inicializuje gen nahodne
 	 */
 	public void randomisation() {

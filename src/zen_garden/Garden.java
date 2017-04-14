@@ -9,9 +9,9 @@ public class Garden {
 	private Position entryGenes[];
 	private static final int SAND = 0, STONE = -1;
 	private boolean decisionGenes[];
-	int x,y,direction,decisionNumber;
-	boolean isStuck;
-	int fitnessValue;
+	private int x,y,direction,decisionNumber;
+	private boolean isStuck;
+	private int fitnessValue;
 	private int map[][];
 	
 	/**
@@ -64,8 +64,17 @@ public class Garden {
 		for(int i=0; i<getEntriesCnt(); i++) {
 			travel(entryGenes[i], ++mark);
 		}
-		printMap();
-		System.out.println(fitnessValue);
+	}
+	/**
+	 * Znaci finalny stav
+	 */
+	public boolean isFinal() {
+		if(!isStuck) {
+			if(fitnessValue == (Evolution.height*Evolution.width)-getDecisionsCnt() ) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * Prejde hrablami raz cez zahradu
@@ -74,8 +83,7 @@ public class Garden {
 		x = position.x;
 		y = position.y;
 		direction = position.direction;
-		
-		//x=1;y=9;direction=Position.UP;
+
 		//ak moze vstupit
 		if(map[x][y]==SAND) {
 			map[x][y]=mark;
@@ -123,7 +131,7 @@ public class Garden {
 			}
 			else return changeDirection();
 		}
-		return false;//koniec
+		return false;//koniec ciary
 	}
 	/**
 	 * Zmenenie smeru pohybu
@@ -194,7 +202,7 @@ public class Garden {
 	/**
 	 * Vypise mapu
 	 */
-	private void printMap() {
+	void printMap() {
 		for(int i=0; i<Evolution.height; i++) {
 			for(int j=0; j<Evolution.width; j++) {
 				if(map[j][i]==STONE)System.out.printf("   ");
@@ -202,6 +210,6 @@ public class Garden {
 			}
 			System.out.println();
 		}
-		System.out.println();
+		System.out.println(fitnessValue);
 	}
 }
