@@ -1,5 +1,5 @@
 #TOURNAMENT_SELECTION=0, PROPORTIONAL_SELECTION=1
-selectionMetod= 1
+selectionMetod= 0
 populationSize= 1000
-maxGenerations = 100
+maxGenerations = 1000
 mutationPercentage = 10

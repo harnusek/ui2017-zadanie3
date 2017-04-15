@@ -3,7 +3,11 @@ package zen_garden;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.stream.IntStream;
-
+/**
+ * Trieda reprezentuje jedinca - zahradu
+ * @author Ondrej Harnusek
+ *
+ */
 public class Garden {
 
 	public Position entryGenes[];
@@ -204,14 +208,15 @@ public class Garden {
 	 * Vypise mapu
 	 */
 	void printMap() {
+		System.out.println();
 		for(int i=0; i<Evolution.height; i++) {
 			for(int j=0; j<Evolution.width; j++) {
-				if(map[j][i]==STONE)System.out.printf("   ");
-				else System.out.printf("%2d ",map[j][i]);
+				if(map[j][i]==STONE)System.out.printf("  K ");
+				else System.out.printf(" %2d ",map[j][i]);
 			}
 			System.out.println();
 		}
-		System.out.println("-"+fitnessValue+"-\n");
+		System.out.println();
 	}
 	/**
 	 * Vrati duplikovany gen

@@ -1,7 +1,11 @@
 package zen_garden;
 
 import java.util.Random;
-
+/**
+ * Gen kodujuci miesto vstupu do zahrady
+ * @author Ondrej Harnusek
+ *
+ */
 public class Position {
 
 	public int x, y;
@@ -39,12 +43,6 @@ public class Position {
 			y = (1+g-third);
 			direction = RIGHT;
 		}
-	}
-	/**
-	 * Vypise info
-	 */
-	public void printInfo() {
-		System.out.printf("[%2d, %2d]\n",x,y);
 	}
 
 }

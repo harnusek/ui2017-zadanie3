@@ -1,13 +1,10 @@
 package zen_garden;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
-
+import java.util.*;
 
 /**
  * Evolucny algoritmus
- * @author Ondrej 
+ * @author Ondrej Harnusek
  */
 public class Evolution {
 	public static int TOURNAMENT_SELECTION=0, PROPORTIONAL_SELECTION=1;
@@ -18,8 +15,8 @@ public class Evolution {
 	public static int width;
 	public static int height;
 	public static int[][] stones;
-	public static int map[][];
-	public Garden population[];
+	public static int map[][];	//mapa zahradky
+	public Garden population[];	//pole jedincov v populacii
 	
 	/**
 	 * Evolucny algoritmus
@@ -42,15 +39,17 @@ public class Evolution {
 	 */
 	private Garden findSolution() {
 		for(int g=0; g<maxGenerations; g++) {
-			//System.out.println("gen: "+g);
 			//ohodnotenie jedincov
-			int fitnessSum=0;
+			int fitnessSum=0, max=0;
 			for(Garden garden : population) {	
-				fitnessSum+= garden.fitness();				
+				fitnessSum+= garden.fitness();
+				if(garden.fitnessValue>max) max = garden.fitnessValue;
 				if(garden.isFinal()) return garden;
 			}
 			//vytvorene novej populacie
 			runReproduction(fitnessSum);
+			//System.out.printf("generation: %3d|\tavg(fitness): %.4f|\t\tmax(fitness): %d\n",g,(double)fitnessSum/populationSize,max);
+			System.out.printf("%d\t%f\t%d\n",g,(double)fitnessSum/populationSize,max);
 		}
 		return null;
 	}
@@ -131,18 +130,6 @@ public class Evolution {
             }
         }
 		return population[0];
-	}
-	/**
-	 * Vypise mapu
-	 */
-	private void printMap() {
-		for(int i=0; i<height; i++) {
-			for(int j=0; j<width; j++) {
-				if(map[j][i]==-1)System.out.printf("  ");
-				else System.out.printf("%2d ",map[j][i]);
-			}
-		System.out.println();
-		}
 	}
 	/**
 	 * Vytvori mapu zahradky

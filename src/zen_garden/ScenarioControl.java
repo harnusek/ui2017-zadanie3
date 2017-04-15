@@ -1,9 +1,12 @@
 package zen_garden;
 
 import java.io.*;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
+/**
+ * Nacita konfiguraciu a scenare zo suboru a spusti ich
+ * @author Ondrej Harnusek
+ *
+ */
 public class ScenarioControl {
 
 	private Scanner input = new Scanner(new File("data/input.txt"));
@@ -16,7 +19,6 @@ public class ScenarioControl {
 	 */
 	public ScenarioControl() throws IOException {
 		readConfig();
-
 		while(input.hasNextInt()) {	//spustenie scenarov
 			readScenario();
 			new Evolution(width, height, stones);
@@ -28,7 +30,6 @@ public class ScenarioControl {
 	private void readConfig() throws FileNotFoundException, IOException {
 		Properties config = new Properties();
 		config.load(configuration);
-
 		Evolution.selectionMetod = Integer.parseInt(config.getProperty("selectionMetod"));
 		Evolution.populationSize = Integer.parseInt(config.getProperty("populationSize"));
 		Evolution.maxGenerations = Integer.parseInt(config.getProperty("maxGenerations"));
